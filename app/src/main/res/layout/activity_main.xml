@@ -17,7 +17,10 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:background="@color/gfgTheme"/>
+        android:background="@color/gfgTheme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <AutoCompleteTextView
         android:id="@+id/pokemonList"
@@ -38,6 +41,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:inputType="number"
+        android:autofillHints="name"
         android:hint="@string/enter_cp"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
@@ -72,7 +76,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/result" />
 
-    <Button
+    <!--<Button
         android:id="@+id/buttonMinimize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,6 +86,6 @@
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBtn" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
