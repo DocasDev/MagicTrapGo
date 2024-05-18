@@ -3,6 +3,7 @@ package dev.docas.magictrapgo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -62,13 +63,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 pokemonInput.clearFocus();
                 cpInput.clearFocus();
+                result.setText("");
 
-                if(pokemonInput.getText().length() == 0)
+                if(pokemonInput.getText().length() == 0 ||
+                        cpInput.getText().length() == 0)
                     return;
 
                 Pokemon pokemon = pokemons.get(pokemonInput.getText().toString());
                 if(pokemon == null)
                     return;
+
+                closeKeyboard();
 
                 IVCalculator ivCalculator = new IVCalculator(pokemon);
                 ArrayList<Double> ivs = ivCalculator.discovery(Integer.parseInt(cpInput.getText().toString()), 1);
@@ -81,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
                     result.setText(df.format(ivs.get(0)) + " - " + df.format(ivs.get(1)));
             }
         });
+    }
+
+    private void closeKeyboard()
+    {
+        InputMethodManager manager
+                = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void loadDatabase() {

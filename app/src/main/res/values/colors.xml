@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gfgTheme">#0A2A4B</color>
+    <color name="gray50">#BBBBBB</color>
 </resources>
