@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MagicTrapGo</string>
+    <string name="enter_cp">Enter CP</string>
+    <string name="search">Search</string>
+    <string name="minimize">Minimize</string>
+    <string name="select_pokemon">Select a pokemon</string>
+</resources>
