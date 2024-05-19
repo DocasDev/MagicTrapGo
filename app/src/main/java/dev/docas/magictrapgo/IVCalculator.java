@@ -23,7 +23,15 @@ public class IVCalculator {
         this.pokemon = pokemon;
     }
 
+    public ArrayList<Double> discovery(int reqCP){
+        return discovery(reqCP, 1, 1);
+    }
+
     public ArrayList<Double> discovery(int reqCP, int minimalStat){
+        return discovery(reqCP, minimalStat, 1);
+    }
+
+    public ArrayList<Double> discovery(int reqCP, int minimalStat, int minimalLevel){
         ArrayList<Double> ivs = new ArrayList<>();
 
         if(minimalStat < 1 )
@@ -32,7 +40,13 @@ public class IVCalculator {
         if(minimalStat > 14)
             minimalStat = 14;
 
-        for (int nivel = 1; nivel <= 40; nivel++) {
+        if(minimalLevel < 1)
+            minimalLevel = 1;
+
+        if(minimalLevel > 35)
+            minimalLevel = 35;
+
+        for (int nivel = minimalLevel; nivel <= 40; nivel++) {
             double cpMultiplier = cpMultipliers[nivel - 1];
             for (int ivAttack = minimalStat; ivAttack <= 15; ivAttack++) {
                 for (int ivDefense = minimalStat; ivDefense <= 15; ivDefense++) {

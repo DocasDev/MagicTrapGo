@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="230dp"
-    android:maxHeight="230dp"
+    android:layout_height="260dp"
+    android:maxHeight="260dp"
     android:background="@drawable/input_background">
 
     <AutoCompleteTextView
@@ -43,11 +43,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pokemonList" />
 
+    <RadioGroup
+        android:id="@+id/capture_types"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pokemonCP">
+        <RadioButton android:id="@+id/wild_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray80"
+            android:text="@string/wild"/>
+        <RadioButton android:id="@+id/research_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray80"
+            android:text="@string/research"/>
+        <RadioButton android:id="@+id/raid_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray80"
+            android:text="@string/raid"/>
+    </RadioGroup>
+
     <TextView
         android:id="@+id/result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
+        android:background="@drawable/rounded_background"
         android:textSize="22sp"
         android:gravity="center"
         android:layout_marginTop="10dp"
@@ -55,7 +85,7 @@
         android:layout_marginRight="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pokemonCP"/>
+        app:layout_constraintTop_toBottomOf="@+id/capture_types"/>
 
     <ImageView
         android:id="@+id/searchBtn"

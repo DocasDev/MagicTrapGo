@@ -3,5 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gfgTheme">#0A2A4B</color>
+    <color name="gray80">#555</color>
     <color name="gray50">#BBBBBB</color>
+    <color name="gray10">#EFEFEF</color>
 </resources>

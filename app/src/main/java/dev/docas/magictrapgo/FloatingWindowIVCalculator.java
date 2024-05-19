@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class FloatingWindowIVCalculator extends Service {
     private TextView result;
     private ImageView searchBtn;
     private ImageView closeBtn;
+    private RadioGroup captureTypes;
 
     // The reference variables for the
     // ViewGroup, WindowManager.LayoutParams,
@@ -49,6 +51,7 @@ public class FloatingWindowIVCalculator extends Service {
     private int LAYOUT_TYPE;
     private WindowManager.LayoutParams floatWindowLayoutParam;
     private WindowManager windowManager;
+    private boolean keyboardOpened = false;
 
     // As FloatingWindowGFG inherits Service class,
     // it actually overrides the onBind method
@@ -84,6 +87,7 @@ public class FloatingWindowIVCalculator extends Service {
         searchBtn = floatView.findViewById(R.id.searchBtn);
         closeBtn = floatView.findViewById(R.id.closeBtn);
         result = floatView.findViewById(R.id.result);
+        captureTypes = floatView.findViewById(R.id.capture_types);
 
         // WindowManager.LayoutParams takes a lot of parameters to set the
         // the parameters of the layout. One of them is Layout_type.
@@ -91,7 +95,8 @@ public class FloatingWindowIVCalculator extends Service {
 
         // translucency by PixelFormat.TRANSLUCENT
         floatWindowLayoutParam = new WindowManager.LayoutParams(
-                (int) (width * (0.55f)),
+                //(int) (width * (0.55f)),
+                (int) (width * (0.7f)),
                 (int) (height * (0.58f)),
                 LAYOUT_TYPE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
@@ -115,7 +120,6 @@ public class FloatingWindowIVCalculator extends Service {
         searchListener();
         closeListener();
         touchListener();
-        //toggleKeyboard();
     }
 
     private void searchListener(){
@@ -134,10 +138,15 @@ public class FloatingWindowIVCalculator extends Service {
                 if(pokemon == null)
                     return;
 
-                //toggleKeyboard();
+                hideKeyboard();
 
+                int[] minimalIvStats = getMinimalIvStats();
                 IVCalculator ivCalculator = new IVCalculator(pokemon);
-                ArrayList<Double> ivs = ivCalculator.discovery(Integer.parseInt(cpInput.getText().toString()), 1);
+                ArrayList<Double> ivs = ivCalculator.discovery(
+                        Integer.parseInt(cpInput.getText().toString()),
+                        minimalIvStats[0],
+                        minimalIvStats[1]
+                );
                 DecimalFormat df = new DecimalFormat("#,##0.0'%'");
                 if(ivs.size() == 0)
                     result.setText("IV not found");
@@ -149,10 +158,23 @@ public class FloatingWindowIVCalculator extends Service {
         });
     }
 
-    private void toggleKeyboard() {
+    private int[] getMinimalIvStats(){
+        int selectedId = captureTypes.getCheckedRadioButtonId();
+        if(selectedId == R.id.wild_type)
+            return new int[] {1, 1};
+        if(selectedId == R.id.research_type)
+            return new int[] {10, 15};
+        if(selectedId == R.id.raid_type)
+            return new int[] {10, 20};
+
+        return new int[] {1, 1};
+    }
+
+    private void hideKeyboard() {
         InputMethodManager manager
                 = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+        manager.hideSoftInputFromWindow(floatView.getApplicationWindowToken(), 0);
     }
 
     private void loadDatabase() {

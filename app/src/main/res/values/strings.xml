@@ -3,5 +3,8 @@
     <string name="enter_cp">Enter CP</string>
     <string name="search">Search</string>
     <string name="minimize">Minimize</string>
+    <string name="wild">Wild</string>
+    <string name="research">Research</string>
+    <string name="raid">Raid</string>
     <string name="select_pokemon">Select a pokemon</string>
 </resources>
