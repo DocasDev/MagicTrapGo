@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/app_name"
-        android:background="@drawable/btn_circle_background"
+        android:background="@drawable/circle_background"
         android:clipToOutline="true"
         android:clickable="true"/>
 

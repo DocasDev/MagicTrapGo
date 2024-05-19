@@ -128,6 +128,7 @@ public class FloatingWindowButton extends Service {
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_UP:
+
                         break;
 
                     // When the window will be touched,
@@ -148,6 +149,7 @@ public class FloatingWindowButton extends Service {
                     // When the window will be dragged around,
                     // it will update the x, y of the Window Layout Parameter
                     case MotionEvent.ACTION_MOVE:
+                        //((CustomImageView)v).isMoving = true;
                         floatWindowLayoutUpdateParam.x = (int) ((x + event.getRawX()) - px);
                         floatWindowLayoutUpdateParam.y = (int) ((y + event.getRawY()) - py);
 
@@ -170,6 +172,11 @@ public class FloatingWindowButton extends Service {
         openBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(((CustomImageView)v).isMoving){
+                    ((CustomImageView)v).isMoving = false;
+                    return;
+                }
+
                 // stopSelf() method is used to stop the service if
                 // it was previously started
                 stopSelf();
