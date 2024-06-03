@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class FloatingWindowButton extends Service {
 
         // inflate a new view hierarchy from the floating_layout xml
         floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout_button, null);
+        floatView.setVisibility(View.INVISIBLE);
 
         openBtn = floatView.findViewById(R.id.openBtn);
 
@@ -113,6 +115,28 @@ public class FloatingWindowButton extends Service {
         touchListener();
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent.getBooleanExtra("Destroy", false)) {
+            destroy();
+            return START_REDELIVER_INTENT;
+        }
+
+        int visibility = intent.getIntExtra("Visibility", View.INVISIBLE);
+        floatView.setVisibility(visibility);
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void destroy(){
+        // stopSelf() method is used to stop the service if
+        // it was previously started
+        stopSelf();
+
+        // The window is removed from the screen
+        windowManager.removeView(floatView);
+    }
+
     private void touchListener(){
         // Another feature of the floating window is, the window is movable.
         // The window can be moved at any position on the screen.
@@ -125,11 +149,7 @@ public class FloatingWindowButton extends Service {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        break;
-
                     // When the window will be touched,
                     // the x and y position of that position
                     // will be retrieved
@@ -151,6 +171,12 @@ public class FloatingWindowButton extends Service {
                         floatWindowLayoutUpdateParam.x = (int) ((x + event.getRawX()) - px);
                         floatWindowLayoutUpdateParam.y = (int) ((y + event.getRawY()) - py);
 
+                        int difX = (int)(floatWindowLayoutUpdateParam.x - x);
+                        int difY = (int)(floatWindowLayoutUpdateParam.y - y);
+                        //Log.e("TEST", "::" + difX);
+                        //Log.e("TEST", "::" + difY);
+                        ((CustomImageView)v).isMoving = difX != 0 || difY != 0;
+
                         windowsPosition.registerWindowPosition(FloatingWindowButton.class.getName(), new WindowPosition(
                                 floatWindowLayoutUpdateParam.x,
                                 floatWindowLayoutUpdateParam.y
@@ -170,16 +196,22 @@ public class FloatingWindowButton extends Service {
         openBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // stopSelf() method is used to stop the service if
-                // it was previously started
-                stopSelf();
+                //Log.e("TEST", "::" + ((CustomImageView)v).isMoving);
+                if(((CustomImageView)v).isMoving){
+                    return;
+                }
 
-                // The window is removed from the screen
-                windowManager.removeView(floatView);
-
-                startService(new Intent(FloatingWindowButton.this, FloatingWindowIVCalculator.class));
+                toggleWindow();
             }
         });
+    }
+
+    private void toggleWindow(){
+        floatView.setVisibility(View.INVISIBLE);
+
+        Intent intent = new Intent(FloatingWindowButton.this, FloatingWindowIVCalculator.class);
+        intent.putExtra("Visibility", View.VISIBLE);
+        startService(intent);
     }
 
     // It is called when stopService()

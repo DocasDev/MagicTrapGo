@@ -53,7 +53,6 @@ public class FloatingWindowIVCalculator extends Service {
     private int LAYOUT_TYPE;
     private WindowManager.LayoutParams floatWindowLayoutParam;
     private WindowManager windowManager;
-    private boolean keyboardOpened = false;
 
     // As FloatingWindowGFG inherits Service class,
     // it actually overrides the onBind method
@@ -83,6 +82,7 @@ public class FloatingWindowIVCalculator extends Service {
 
         // inflate a new view hierarchy from the floating_layout xml
         floatView = (ViewGroup) inflater.inflate(R.layout.floating_layout, null);
+        floatView.setVisibility(View.INVISIBLE);
 
         pokemonInput = floatView.findViewById(R.id.pokemonList);
         cpInput = floatView.findViewById(R.id.pokemonCP);
@@ -124,6 +124,19 @@ public class FloatingWindowIVCalculator extends Service {
         closeListener();
         toggleListener();
         touchListener();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent.getBooleanExtra("Destroy", false)) {
+            destroy();
+            return START_REDELIVER_INTENT;
+        }
+
+        int visibility = intent.getIntExtra("Visibility", View.INVISIBLE);
+        floatView.setVisibility(visibility);
+
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void searchListener(){
@@ -248,17 +261,25 @@ public class FloatingWindowIVCalculator extends Service {
         actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
     }
 
+    private void destroy(){
+        // stopSelf() method is used to stop the service if
+        // it was previously started
+        stopSelf();
+
+        // The window is removed from the screen
+        windowManager.removeView(floatView);
+    }
+
     private void closeListener(){
         // The button that helps to maximize the app
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // stopSelf() method is used to stop the service if
-                // it was previously started
-                stopSelf();
+                Intent intent = new Intent(FloatingWindowIVCalculator.this, FloatingWindowButton.class);
+                intent.putExtra("Destroy", true);
+                startService(intent);
 
-                // The window is removed from the screen
-                windowManager.removeView(floatView);
+                destroy();
             }
         });
     }
@@ -268,14 +289,11 @@ public class FloatingWindowIVCalculator extends Service {
         toggleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // stopSelf() method is used to stop the service if
-                // it was previously started
-                stopSelf();
+                floatView.setVisibility(View.INVISIBLE);
 
-                // The window is removed from the screen
-                windowManager.removeView(floatView);
-
-                startService(new Intent(FloatingWindowIVCalculator.this, FloatingWindowButton.class));
+                Intent intent = new Intent(FloatingWindowIVCalculator.this, FloatingWindowButton.class);
+                intent.putExtra("Visibility", View.VISIBLE);
+                startService(intent);
             }
         });
     }

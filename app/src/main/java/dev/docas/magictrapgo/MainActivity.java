@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private AlertDialog dialog;
@@ -56,7 +57,14 @@ public class MainActivity extends AppCompatActivity {
     private void openFloatingScreen(){
         if (checkOverlayDisplayPermission()) {
             // FloatingWindowGFG service is started
-            startService(new Intent(MainActivity.this, FloatingWindowButton.class));
+            Intent btnIntent = new Intent(MainActivity.this, FloatingWindowButton.class);
+            btnIntent.putExtra("Visibility", View.VISIBLE);
+            startService(btnIntent);
+
+            Intent formIntent = new Intent(MainActivity.this, FloatingWindowIVCalculator.class);
+            btnIntent.putExtra("Visibility", View.INVISIBLE);
+            startService(formIntent);
+
             // The MainActivity closes here
             finish();
             return;
