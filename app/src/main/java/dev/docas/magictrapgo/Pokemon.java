@@ -6,13 +6,15 @@ public class Pokemon {
     private final int attack;
     private final int defense;
     private final int stamina;
+    private final String type;
 
-    public Pokemon(int id, String name, int attack, int defense, int stamina) {
+    public Pokemon(int id, String name, int attack, int defense, int stamina, String type) {
         this.id = id;
         this.name = name;
         this.attack = attack;
         this.defense = defense;
         this.stamina = stamina;
+        this.type = type;
     }
 
     public int getId() {
@@ -34,4 +36,6 @@ public class Pokemon {
     public int getStamina() {
         return stamina;
     }
+
+    public String getType() { return type; }
 }

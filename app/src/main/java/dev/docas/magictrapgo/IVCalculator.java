@@ -1,9 +1,7 @@
 package dev.docas.magictrapgo;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,34 +21,14 @@ public class IVCalculator {
         this.pokemon = pokemon;
     }
 
-    public ArrayList<Double> discovery(int reqCP){
-        return discovery(reqCP, 1, 1);
-    }
-
-    public ArrayList<Double> discovery(int reqCP, int minimalStat){
-        return discovery(reqCP, minimalStat, 1);
-    }
-
-    public ArrayList<Double> discovery(int reqCP, int minimalStat, int minimalLevel){
+    public ArrayList<Double> discovery(int reqCP, CatchParameters catchParameters){
         ArrayList<Double> ivs = new ArrayList<>();
 
-        if(minimalStat < 1 )
-            minimalStat = 1;
-
-        if(minimalStat > 14)
-            minimalStat = 14;
-
-        if(minimalLevel < 1)
-            minimalLevel = 1;
-
-        if(minimalLevel > 35)
-            minimalLevel = 35;
-
-        for (int nivel = minimalLevel; nivel <= 40; nivel++) {
-            double cpMultiplier = cpMultipliers[nivel - 1];
-            for (int ivAttack = minimalStat; ivAttack <= 15; ivAttack++) {
-                for (int ivDefense = minimalStat; ivDefense <= 15; ivDefense++) {
-                    for (int ivStamina = minimalStat; ivStamina <= 15; ivStamina++) {
+        for (int level: catchParameters.getLevels()) {
+            double cpMultiplier = cpMultipliers[level - 1];
+            for (int ivAttack = catchParameters.getMinIvStat(); ivAttack <= catchParameters.getMaxIvStat(); ivAttack++) {
+                for (int ivDefense = catchParameters.getMinIvStat(); ivDefense <= catchParameters.getMaxIvStat(); ivDefense++) {
+                    for (int ivStamina = catchParameters.getMinIvStat(); ivStamina <= catchParameters.getMaxIvStat(); ivStamina++) {
                         if(cpCalculate(ivAttack, ivDefense, ivStamina, cpMultiplier) != reqCP)
                             continue;
 

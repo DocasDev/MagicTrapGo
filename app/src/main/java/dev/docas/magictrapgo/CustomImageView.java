@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class CustomImageView extends androidx.appcompat.widget.AppCompatImageView {
-    public boolean isMoving = false;
-
     public CustomImageView(@NonNull Context context) {
         super(context);
     }
@@ -31,15 +29,11 @@ public class CustomImageView extends androidx.appcompat.widget.AppCompatImageVie
                 return true;
 
             case MotionEvent.ACTION_UP:
-                if(isMoving){
-                    isMoving = false;
-                    return false;
-                }
-                performClick();
+                setClickable(true);
                 return true;
 
             case MotionEvent.ACTION_MOVE:
-                isMoving = true;
+                setClickable(false);
                 return true;
         }
         return false;

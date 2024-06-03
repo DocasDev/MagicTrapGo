@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.stream.IntStream;
 
 import androidx.annotation.Nullable;
 
@@ -41,6 +42,7 @@ public class FloatingWindowIVCalculator extends Service {
     private EditText cpInput;
     private TextView result;
     private ImageView searchBtn;
+    private CustomImageView toggleBtn;
     private ImageView closeBtn;
     private RadioGroup captureTypes;
 
@@ -85,6 +87,7 @@ public class FloatingWindowIVCalculator extends Service {
         pokemonInput = floatView.findViewById(R.id.pokemonList);
         cpInput = floatView.findViewById(R.id.pokemonCP);
         searchBtn = floatView.findViewById(R.id.searchBtn);
+        toggleBtn = floatView.findViewById(R.id.toggleBtn);
         closeBtn = floatView.findViewById(R.id.closeBtn);
         result = floatView.findViewById(R.id.result);
         captureTypes = floatView.findViewById(R.id.capture_types);
@@ -119,6 +122,7 @@ public class FloatingWindowIVCalculator extends Service {
         createDropDownList();
         searchListener();
         closeListener();
+        toggleListener();
         touchListener();
     }
 
@@ -140,12 +144,11 @@ public class FloatingWindowIVCalculator extends Service {
 
                 hideKeyboard();
 
-                int[] minimalIvStats = getMinimalIvStats();
+                CatchParameters catchParameters = getCatchParameters(pokemon.getType());
                 IVCalculator ivCalculator = new IVCalculator(pokemon);
                 ArrayList<Double> ivs = ivCalculator.discovery(
                         Integer.parseInt(cpInput.getText().toString()),
-                        minimalIvStats[0],
-                        minimalIvStats[1]
+                        catchParameters
                 );
                 DecimalFormat df = new DecimalFormat("#,##0.0'%'");
                 if(ivs.size() == 0)
@@ -158,16 +161,22 @@ public class FloatingWindowIVCalculator extends Service {
         });
     }
 
-    private int[] getMinimalIvStats(){
+    private CatchParameters getCatchParameters(String type){
         int selectedId = captureTypes.getCheckedRadioButtonId();
         if(selectedId == R.id.wild_type)
-            return new int[] {1, 1};
-        if(selectedId == R.id.research_type)
-            return new int[] {10, 15};
-        if(selectedId == R.id.raid_type)
-            return new int[] {10, 20};
+            return new CatchParameters(1, 15, IntStream.range(1, 36).toArray());
+            //return new int[] {1, 15, 1, 35};
+        else if(selectedId == R.id.research_type)
+            return new CatchParameters(10, 15, IntStream.range(1, 36).toArray());
+            //return new int[] {10, 15};
+        else if(selectedId == R.id.raid_type && type.equals("S"))
+            return new CatchParameters(6, 15, new int[] { 20, 25 });
+            //return new int[] {10, 20};
+        else if(selectedId == R.id.raid_type)
+            return new CatchParameters(10, 15, new int[] { 20, 25 });
 
-        return new int[] {1, 1};
+
+        return new CatchParameters(1, 15, IntStream.range(1, 36).toArray());
     }
 
     private void hideKeyboard() {
@@ -201,7 +210,8 @@ public class FloatingWindowIVCalculator extends Service {
                         name,
                         obj.getInt("base_attack"),
                         obj.getInt("base_defense"),
-                        obj.getInt("base_stamina")
+                        obj.getInt("base_stamina"),
+                        obj.getString("form")
                 );
                 pokemons.put(name, pokemon);
             }
@@ -249,8 +259,22 @@ public class FloatingWindowIVCalculator extends Service {
 
                 // The window is removed from the screen
                 windowManager.removeView(floatView);
+            }
+        });
+    }
 
-                // FloatingWindowGFG service is started
+    private void toggleListener(){
+        // The button that helps to maximize the app
+        toggleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // stopSelf() method is used to stop the service if
+                // it was previously started
+                stopSelf();
+
+                // The window is removed from the screen
+                windowManager.removeView(floatView);
+
                 startService(new Intent(FloatingWindowIVCalculator.this, FloatingWindowButton.class));
             }
         });
@@ -304,9 +328,9 @@ public class FloatingWindowIVCalculator extends Service {
     // method is called in MainActivity
     @Override
     public void onDestroy() {
-        super.onDestroy();
         stopSelf();
         // Window is removed from the screen
         windowManager.removeView(floatView);
+        super.onDestroy();
     }
 }
